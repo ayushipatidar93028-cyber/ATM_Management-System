@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATM Management System</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for premium look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="atm-container">
+        <!-- Header / Branding -->
+        <header class="atm-header">
+            <div class="logo">BANK<span>PRO</span></div>
+            <div class="time" id="current-time">12:00 PM</div>
+        </header>
+
+        <!-- Screen Display Area -->
+        <main id="main-screen">
+            
+            <!-- 1. Welcome Screen -->
+            <section id="screen-welcome" class="screen active">
+                <h1>Welcome to BankPro ATM</h1>
+                <p>Please insert your card to continue</p>
+                <div class="card-slot-area">
+                    <button class="btn-primary pulse" onclick="app.navigateTo('login')">Insert Card</button>
+                </div>
+            </section>
+
+            <!-- 2. Login Screen -->
+            <section id="screen-login" class="screen hidden">
+                <h2>Security Check</h2>
+                <p>Please enter your 4-digit PIN</p>
+                <div class="input-display">
+                    <input type="password" id="pin-input" maxlength="4" placeholder="****" readonly>
+                </div>
+                <div class="keypad">
+                    <button onclick="app.appendPin('1')">1</button>
+                    <button onclick="app.appendPin('2')">2</button>
+                    <button onclick="app.appendPin('3')">3</button>
+                    <button onclick="app.appendPin('4')">4</button>
+                    <button onclick="app.appendPin('5')">5</button>
+                    <button onclick="app.appendPin('6')">6</button>
+                    <button onclick="app.appendPin('7')">7</button>
+                    <button onclick="app.appendPin('8')">8</button>
+                    <button onclick="app.appendPin('9')">9</button>
+                    <button class="btn-clear" onclick="app.clearPin()">C</button>
+                    <button onclick="app.appendPin('0')">0</button>
+                    <button class="btn-enter" onclick="app.validateLogin()">OK</button>
+                </div>
+                <p id="login-error" class="error-msg"></p>
+            </section>
+
+            <!-- 3. Dashboard Screen -->
+            <section id="screen-dashboard" class="screen hidden">
+                <h2>Main Menu</h2>
+                <p>Select a transaction</p>
+                <div class="grid-menu">
+                    <button onclick="app.checkBalance()">Check Balance</button>
+                    <button onclick="app.navigateTo('withdraw')">Withdraw Cash</button>
+                    <button onclick="app.navigateTo('deposit')">Deposit Cash</button>
+                    <button onclick="app.navigateTo('statement')">Mini Statement</button>
+                    <button onclick="app.navigateTo('changepin')">Change PIN</button>
+                    <button class="btn-exit" onclick="app.logout()">Exit</button>
+                </div>
+            </section>
+
+            <!-- 4. Balance Screen -->
+            <section id="screen-balance" class="screen hidden">
+                <h2>Available Balance</h2>
+                <div class="balance-display">
+                    <span class="currency">$</span><span id="display-balance-amount">0.00</span>
+                </div>
+                <button class="btn-secondary" onclick="app.navigateTo('dashboard')">Back to Menu</button>
+            </section>
+
+            <!-- 5. Withdraw Screen -->
+            <section id="screen-withdraw" class="screen hidden">
+                <h2>Withdraw Cash</h2>
+                <p>Enter amount to withdraw</p>
+                <input type="number" id="withdraw-amount" placeholder="Enter Amount">
+                <div class="quick-cash">
+                    <button onclick="app.setWithdraw(20)">$20</button>
+                    <button onclick="app.setWithdraw(50)">$50</button>
+                    <button onclick="app.setWithdraw(100)">$100</button>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn-primary" onclick="app.processWithdraw()">Confirm</button>
+                    <button class="btn-secondary" onclick="app.navigateTo('dashboard')">Cancel</button>
+                </div>
+                <p id="withdraw-msg" class="info-msg"></p>
+            </section>
+
+            <!-- 6. Deposit Screen -->
+            <section id="screen-deposit" class="screen hidden">
+                <h2>Deposit Cash</h2>
+                <p>Enter amount to deposit</p>
+                <input type="number" id="deposit-amount" placeholder="Enter Amount">
+                <div class="action-buttons">
+                    <button class="btn-primary" onclick="app.processDeposit()">Deposit</button>
+                    <button class="btn-secondary" onclick="app.navigateTo('dashboard')">Cancel</button>
+                </div>
+                <p id="deposit-msg" class="info-msg"></p>
+            </section>
+
+            <!-- 7. Change PIN Screen -->
+            <section id="screen-changepin" class="screen hidden">
+                <h2>Change PIN</h2>
+                <input type="password" id="old-pin" maxlength="4" placeholder="Old PIN">
+                <input type="password" id="new-pin" maxlength="4" placeholder="New PIN">
+                <input type="password" id="confirm-pin" maxlength="4" placeholder="Confirm New PIN">
+                <div class="action-buttons">
+                    <button class="btn-primary" onclick="app.processChangePin()">Update</button>
+                    <button class="btn-secondary" onclick="app.navigateTo('dashboard')">Cancel</button>
+                </div>
+                <p id="pin-msg" class="info-msg"></p>
+            </section>
+
+            <!-- 8. Mini Statement Screen -->
+            <section id="screen-statement" class="screen hidden">
+                <h2>Mini Statement</h2>
+                <div class="statement-container">
+                    <table class="statement-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transaction-list">
+                            <!-- JS will populate this -->
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn-secondary" onclick="app.navigateTo('dashboard')">Back</button>
+            </section>
+
+            <!-- 9. Exit Screen -->
+            <section id="screen-exit" class="screen hidden">
+                <div class="exit-content">
+                    <h2>Thank You!</h2>
+                    <p>Please take your card.</p>
+                    <p>Session ended.</p>
+                </div>
+            </section>
+
+        </main>
+        
+        <footer>
+            <div class="status-bar">
+                <span>System: Online</span>
+                <span>ID: ATM-001</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
